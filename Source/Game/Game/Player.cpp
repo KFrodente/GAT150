@@ -4,6 +4,11 @@
 #include "Weapon.h"
 #include "Input/InputSystem.h"
 #include "Renderer/Renderer.h"
+#include "Framework/Components/SpriteComponent.h"
+#include "Framework/Resource/ResourceManager.h"
+
+#include "Framework/Components/PhysicsComponent.h"
+
 #include "Framework/Scene.h"
 #include "Renderer/ModelManager.h"
 #include "Audio/AudioSystem.h"
@@ -34,6 +39,15 @@ void Player::Update(float dt)
 	}
 	//m_transform.position.x = yogi::Wrap(m_transform.position.x, yogi::g_renderer.GetWidth());
 	//m_transform.position.y = yogi::Wrap(m_transform.position.y, yogi::g_renderer.GetHeight());
+
+
+	//float thrust = 0;
+	//if (yogi::g_inputSystem.GetKeyDown(SDL_SCANCODE_S)) thrust = 1;
+	//yogi::vec2 forward = yogi::vec2{0, -1).Rotate(m_transform.rotation;
+	//auto physicsComponent = GetComponent<yogi::PhysicsComponent>();
+	//physicsComponent->ApplyForce(forward * m_speed * thrust);
+
+
 	m_fireTimer -= dt;
 	//fire weapon
 	if (yogi::g_inputSystem.GetKeyDown(SDL_SCANCODE_SPACE)/* && !yogi::g_inputSystem.GetPreviousKeyDown(SDL_SCANCODE_SPACE)*/ && m_fireTimer <= 0)
@@ -41,10 +55,15 @@ void Player::Update(float dt)
 		yogi::g_audioSystem.PlayOneShot("hitSound1", false);
 		m_fireTimer = m_fireRate;
 		//create weapon
-		yogi::Transform transform{ m_transform.position, m_transform.rotation, .5f};
-		std::unique_ptr<Weapon> weapon = std::make_unique<Weapon>( 15.0f, m_transform, yogi::g_modelManager.Get("PlayerBullet.txt"));
+		yogi::Transform transform{ m_transform.position, yogi::Deg2Rad(90), .5f};
+		std::unique_ptr<Weapon> weapon = std::make_unique<Weapon>( 15.0f, transform);
 		weapon->m_tag = "PlayerBullet"; //in the weapon add a timer that the OnCollision method checks, if this timer is less than 0, destroy player.
 		weapon->m_game = this->m_game;
+
+		std::unique_ptr<yogi::SpriteComponent> component = std::make_unique<yogi::SpriteComponent>();
+		component->m_texture = yogi::g_resources.Get<yogi::Texture>("PlayerBullet.png", yogi::g_renderer);
+
+		weapon->AddComponent(std::move(component));
 		m_scene->Add(std::move(weapon));
 	}
 	if (yogi::g_inputSystem.GetKeyDown(SDL_SCANCODE_T)) yogi::g_time.SetTimeScale(0.5f);

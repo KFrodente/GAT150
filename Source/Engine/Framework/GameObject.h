@@ -1,5 +1,6 @@
 #pragma once
 #include "Core/Core.h"
+#include "Components/Component.h"
 #include <memory>
 #include "Renderer/Model.h"
 
@@ -14,18 +15,20 @@ namespace yogi
 			m_transform{ transform }
 		{}
 		GameObject(const yogi::Transform& transform, std::shared_ptr<Model> model) :
-			m_transform{ transform },
-			m_model{ model }
+			m_transform{ transform }
 		{}
 
 		virtual void Update(float dt);
 		virtual void Draw(yogi::Renderer& renderer);
 
-		float GetRadius() { return (m_model) ? m_model->GetRadius() * m_transform.scale : 0; }
+		void AddComponent(std::unique_ptr<Component> component);
+		template<typename T>
+		T* GetComponent();
+
+		float GetRadius() { return 20.0f; }
 		virtual void OnCollision(GameObject* other) {}
 
-		void AddForce(const vec2 force) { m_velocity += force; }
-		void SetDamping(float damping) { m_damping = damping; }
+		
 
 		class Scene* m_scene = nullptr;
 		friend class Scene;
@@ -40,12 +43,26 @@ namespace yogi
 		float m_lifespan = -1.0f;
 
 	protected:
+		std::vector<std::unique_ptr<Component>> m_components;
+
 		bool m_destroyed = false;
 		int m_health = 1;
 
-		std::shared_ptr<Model> m_model;
-
-		vec2 m_velocity;
-		float m_damping = 0;
+		
 	};
+
+
+	template<typename T>
+	inline T* GameObject::GetComponent()
+	{
+		for (auto& component : m_components)
+		{
+			T* result = dynamic_cast<T*>(component.get());
+
+			if (result) return result;
+		}
+
+
+		return nullptr;
+	}
 }

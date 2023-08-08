@@ -3,6 +3,8 @@
 #include "Enemy.h"
 
 #include "Framework/Scene.h"
+#include "Framework/Components/SpriteComponent.h"
+#include "Framework/Components/EnginePhysicsComponent.h"
 
 #include "Audio/AudioSystem.h"
 #include "Input/InputSystem.h"
@@ -10,6 +12,7 @@
 #include "Renderer/ModelManager.h"
 #include "Renderer/Text.h"
 #include "Framework/Emitter.h"
+#include "Framework/Resource/ResourceManager.h"
 
 SpaceGame g_spaceGame;
 const int g_gridYSpots[6] = { 75, 175, 275, 375, 475, 575 };
@@ -19,22 +22,22 @@ float g_moveEnemyTimer = 50.0f;
 bool SpaceGame::Init()
 {
 	//text
-	m_font = std::make_shared<yogi::Font>("BodoniFLF-Bold.ttf", 24);
+	//m_font = yogi::g_resources.Get<yogi::Font>("BodoniFLF-Bold.ttf", 24);
 
-	m_scoreText = std::make_unique<yogi::Text>(m_font);
+	m_scoreText = std::make_unique<yogi::Text>(yogi::g_resources.Get<yogi::Font>("BodoniFLF-Bold.ttf", 24));
 	m_scoreText->Create(yogi::g_renderer, "SCORE 0000", yogi::Color{0.5f, 0.8f, .1f, 1});
 
-	m_neededScoreText = std::make_unique<yogi::Text>(m_font);
+	m_neededScoreText = std::make_unique<yogi::Text>(yogi::g_resources.Get<yogi::Font>("BodoniFLF-Bold.ttf", 24));
 	m_neededScoreText->Create(yogi::g_renderer, "NEXT CHANGE", yogi::Color{1.0f, 0.8f, .1f, 1});
 	
 
-	m_titleText = std::make_unique<yogi::Text>(m_font);
+	m_titleText = std::make_unique<yogi::Text>(yogi::g_resources.Get<yogi::Font>("BodoniFLF-Bold.ttf", 24));
 	m_titleText->Create(yogi::g_renderer, "DODGE GAME [SPACE] TO START", yogi::Color{0.7f, 0.25f, 1, 1});
 	
-	m_healthText = std::make_unique<yogi::Text>(m_font);
+	m_healthText = std::make_unique<yogi::Text>(yogi::g_resources.Get<yogi::Font>("BodoniFLF-Bold.ttf", 24));
 	m_healthText->Create(yogi::g_renderer, "HEALTH: ", yogi::Color{0.8f, 1, 0.8f, 1});
 	
-	m_gameOverText = std::make_unique<yogi::Text>(m_font);
+	m_gameOverText = std::make_unique<yogi::Text>(yogi::g_resources.Get<yogi::Font>("BodoniFLF-Bold.ttf", 24));
 	m_gameOverText->Create(yogi::g_renderer, "YOU DIED [R] TO RESTART", yogi::Color{1, 0, 0, 1});
 
 	//audio
@@ -104,10 +107,21 @@ void SpaceGame::Update(float dt)
 	case eState::STARTLEVEL:
 		m_scene->RemoveAll();
 	{
-		std::unique_ptr<Player> player = std::make_unique<Player>(0.5f, yogi::Rad2Deg(.0025f), yogi::Transform{ { g_gridXSpots[0], g_gridYSpots[0]}, yogi::Deg2Rad(90), 3 }, yogi::g_modelManager.Get("ship.txt"));
+			//create player
+			std::unique_ptr<Player> player = std::make_unique<Player>(0.5f, yogi::Rad2Deg(.0025f), yogi::Transform{ { g_gridXSpots[0], g_gridYSpots[0]}, yogi::Deg2Rad(0), 3 });
 		player->m_tag = "Player";
 		player->m_game = this;
-		player->SetDamping(0.25f);
+		//player->SetDamping(0.25f);
+
+		//create components
+		std::unique_ptr<yogi::SpriteComponent> component = std::make_unique<yogi::SpriteComponent>();
+		component->m_texture = yogi::g_resources.Get<yogi::Texture>("Duck.png", yogi::g_renderer);
+
+		player->AddComponent(std::move(component));
+
+		auto physicsComponent = std::make_unique<yogi::EnginePhysicsComponent>();
+		player->AddComponent(std::move(physicsComponent));
+
 		m_scene->Add(move(player));
 
 		m_state = eState::GAME;
@@ -128,10 +142,15 @@ void SpaceGame::Update(float dt)
 			m_spawnTimer = 0;
 			yogi::g_audioSystem.PlayOneShot("enemySpawn", false);
 			int randomYPos = yogi::random(6);
-			std::unique_ptr<Enemy> enemy = std::make_unique<Enemy>(yogi::randomf(1.0f, 5.0f), yogi::Pi, yogi::Transform{{g_gridXSpots[5], g_gridYSpots[randomYPos]}, yogi::Deg2Rad(-90), 3}, yogi::g_modelManager.Get("Enemy.txt"));
+			std::unique_ptr<Enemy> enemy = std::make_unique<Enemy>(yogi::randomf(1.0f, 5.0f), yogi::Pi, yogi::Transform{{g_gridXSpots[5], g_gridYSpots[randomYPos]}, yogi::Deg2Rad(-90), 3});
 			enemy->SetYPos(randomYPos);
 			enemy->m_tag = "Enemy";
 			enemy->m_game = this;
+
+			std::unique_ptr<yogi::SpriteComponent> component = std::make_unique<yogi::SpriteComponent>();
+			component->m_texture = yogi::g_resources.Get<yogi::Texture>("Duck.png", yogi::g_renderer);
+
+			enemy->AddComponent(std::move(component));
 			m_scene->Add(move(enemy));
 		}
 		break;

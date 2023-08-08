@@ -1,5 +1,8 @@
 #include "Renderer.h"
+#include "Texture.h"
+#include "Core/Vector2.h"
 #include "SDL2-2.28.0/include/SDL_ttf.h"
+#include "SDL2-2.28.0/include/SDL_image.h"
 
 namespace yogi {
 	
@@ -8,6 +11,7 @@ namespace yogi {
 	bool Renderer::Initialize()
 	{
 		SDL_Init(SDL_INIT_VIDEO);
+		SDL_Init(IMG_INIT_JPG | IMG_INIT_PNG);
 		TTF_Init();
 
 		return true;
@@ -18,6 +22,7 @@ namespace yogi {
 		SDL_DestroyRenderer(m_renderer);
 		SDL_DestroyWindow(m_window);
 		TTF_Quit();
+		IMG_Quit();
 	}
 
 	void Renderer::CreateWindow(const std::string& title, int width, int height)
@@ -61,4 +66,19 @@ namespace yogi {
 	{
 		SDL_RenderDrawPointF(m_renderer, x, y);
 	}
+
+	void Renderer::DrawTexture(Texture* texture, float x, float y, float angle)
+	{
+		vec2 size = texture->GetSize();
+
+		SDL_Rect dest;
+		dest.x = (int)(x - (size.x * 0.f));
+		dest.y = (int)(y - (size.y * 0.5f));
+		dest.w = size.x;
+		dest.h = size.y;
+
+		SDL_RenderCopyEx(m_renderer, texture->m_texture, NULL, &dest, angle, NULL, SDL_FLIP_NONE);
+	}
+
+
 }

@@ -5,8 +5,8 @@ class Weapon : public yogi::GameObject
 {
 public:
 
-	Weapon(float speed, const yogi::Transform& transform, std::shared_ptr<yogi::Model> model) :
-		GameObject{ transform, model },
+	Weapon(float speed, const yogi::Transform& transform) :
+		GameObject{ transform },
 		m_speed{ speed }
 	{
 		m_lifespan = -1.0f;

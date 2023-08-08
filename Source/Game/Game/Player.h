@@ -5,8 +5,8 @@ class Player : public yogi::GameObject
 {
 public:
 
-	Player(float speed, float turnRate, const yogi::Transform& transform, std::shared_ptr<yogi::Model> model) :
-		GameObject{ transform, model },
+	Player(float speed, float turnRate, const yogi::Transform& transform) :
+		GameObject{ transform },
 		m_speed{ speed },
 		m_turnRate{ turnRate }
 	{

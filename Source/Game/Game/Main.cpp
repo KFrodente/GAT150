@@ -1,15 +1,20 @@
 #include <iostream>
 #include <vector>
+#include <cassert>
+#include <array>
+#include <map>
 
 #include "Renderer/Text.h"
 #include "Core/Core.h"
 #include "Renderer/ModelManager.h"
 #include "Renderer/Renderer.h"
 #include "Input/InputSystem.h"
+#include "Framework/Resource/ResourceManager.h"
 #include "Framework/Scene.h"
 #include "Audio/AudioSystem.h"
 #include "Player.h"
 #include "Enemy.h"
+#include "Renderer/Texture.h"
 
 #include "Framework/Emitter.h"
 #include "Renderer/Particle.h"
@@ -20,27 +25,14 @@
 using namespace std;
 using vec2 = yogi::Vector2;
 
-class Star
-{
-public:
-	Star(const vec2& pos, const vec2& vel):
-		m_pos{ pos },
-		m_vel{ vel }{}
-
-	void Update()
-	{
-		m_pos += m_vel * yogi::g_time.GetDeltaTime();
-		
-	}
-public:
-	vec2 m_pos;
-	vec2 m_vel;
-};
-
-
 int main(int argc, char* argv[])
 {
-	
+
+
+	INFO_LOG("Hello World");
+
+
+
 	yogi::MemoryTracker::Initialize();
 	yogi::seedRandom((unsigned int)time(nullptr));
 	yogi::setFilePath("assets");
@@ -50,6 +42,8 @@ int main(int argc, char* argv[])
 
 	yogi::g_audioSystem.Initialize();
 	yogi::g_inputSystem.Initialize();
+
+	//yogi::res_t<yogi::Texture> texture = yogi::g_resources.Get<yogi::Texture>("Duck.png", yogi::g_renderer);
 
 	unique_ptr<SpaceGame> game = make_unique<SpaceGame>();
 	game->Init();
@@ -113,6 +107,8 @@ int main(int argc, char* argv[])
 
 		game->Draw(yogi::g_renderer);
 		yogi::g_particleSystem.Draw(yogi::g_renderer);
+
+		//yogi::g_renderer.DrawTexture(texture.get(), 200.0f, 200.0f, 0.0f);
 
 		yogi::g_renderer.EndFrame();
 	}

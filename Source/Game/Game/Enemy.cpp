@@ -6,6 +6,9 @@
 #include "Renderer/Renderer.h"
 #include "Framework/Emitter.h"
 #include "Audio/AudioSystem.h"
+
+#include "Framework/Components/SpriteComponent.h"
+#include "Framework/Resource/ResourceManager.h"
 void Enemy::Update(float dt)
 {
 	GameObject::Update(dt);
@@ -24,14 +27,23 @@ void Enemy::Update(float dt)
 	{
 		//g_spaceGame.DoDamage(m_damage);
 		yogi::Transform transform1{ {m_transform.position.x, m_transform.position.y + 5}, yogi::Deg2Rad(0), .5f};
-		std::unique_ptr<Weapon> weapon = std::make_unique<Weapon>(10.0f, transform1, m_model);
+		std::unique_ptr<Weapon> weapon = std::make_unique<Weapon>(10.0f, transform1);
 		weapon->m_tag = "SpecialBullet";
 		weapon->m_damage = 100;
+
+		std::unique_ptr<yogi::SpriteComponent> component = std::make_unique<yogi::SpriteComponent>();
+		component->m_texture = yogi::g_resources.Get<yogi::Texture>("EnemyBullet.png", yogi::g_renderer);
+
+		weapon->AddComponent(std::move(component));
 		m_scene->Add(std::move(weapon));
 		yogi::Transform transform2{ {m_transform.position.x, m_transform.position.y + 5}, yogi::Deg2Rad(180), .5f};
-		std::unique_ptr<Weapon> weapon2 = std::make_unique<Weapon>(10.0f, transform2, m_model);
+		std::unique_ptr<Weapon> weapon2 = std::make_unique<Weapon>(10.0f, transform2);
 		weapon2->m_tag = "SpecialBullet";
 		weapon2->m_damage = 100;
+		std::unique_ptr<yogi::SpriteComponent> component2 = std::make_unique<yogi::SpriteComponent>();
+		component2->m_texture = yogi::g_resources.Get<yogi::Texture>("EnemyBullet.png", yogi::g_renderer);
+
+		weapon2->AddComponent(std::move(component2));
 		m_scene->Add(std::move(weapon2));
 		m_health = 0;
 	}
@@ -44,10 +56,14 @@ void Enemy::Update(float dt)
 	if (m_fireTimer <= 0 && m_health > 0) {
 		m_fireTimer = m_fireRate;
 		yogi::Transform transform1{ m_transform.position, m_transform.rotation, .5f};
-		std::unique_ptr<Weapon> weapon = std::make_unique<Weapon>(10.0f, transform1, m_model);
+		std::unique_ptr<Weapon> weapon = std::make_unique<Weapon>(10.0f, transform1);
 		weapon->m_tag = "EnemyBullet";
 		weapon->m_game = this->m_game;
 		weapon->m_damage = 10;
+		std::unique_ptr<yogi::SpriteComponent> component = std::make_unique<yogi::SpriteComponent>();
+		component->m_texture = yogi::g_resources.Get<yogi::Texture>("EnemyBullet.png", yogi::g_renderer);
+
+		weapon->AddComponent(std::move(component));
 		m_scene->Add(std::move(weapon));
 	}
 }

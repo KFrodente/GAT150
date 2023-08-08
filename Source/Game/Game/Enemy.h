@@ -5,8 +5,8 @@ class Enemy : public yogi::GameObject
 {
 public:
 
-	Enemy(float speed, float turnRate, const yogi::Transform& transform, std::shared_ptr<yogi::Model> model) :
-		GameObject{ transform, model },
+	Enemy(float speed, float turnRate, const yogi::Transform& transform) :
+		GameObject{ transform},
 		m_speed{ speed },
 		m_turnRate{ turnRate }
 	{
