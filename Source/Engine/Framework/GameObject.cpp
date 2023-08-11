@@ -3,6 +3,24 @@
 
 namespace yogi
 {
+	bool GameObject::Initialize()
+	{
+		for (auto& component : m_components)
+		{
+			component->Initialize();
+		}
+
+		return true;
+	}
+	void GameObject::OnDestroy()
+	{
+		for (auto& component : m_components)
+		{
+			component->OnDestroy();
+		}
+	}
+
+
 	void GameObject::Update(float dt)
 	{
 		if (m_lifespan != -1.0f) 

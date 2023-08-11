@@ -4,30 +4,46 @@
 #include <array>
 #include <map>
 
-#include "Renderer/Text.h"
 #include "Core/Core.h"
-#include "Renderer/ModelManager.h"
 #include "Renderer/Renderer.h"
 #include "Input/InputSystem.h"
-#include "Framework/Resource/ResourceManager.h"
-#include "Framework/Scene.h"
+#include "Framework/Framework.h"
 #include "Audio/AudioSystem.h"
-#include "Player.h"
-#include "Enemy.h"
-#include "Renderer/Texture.h"
-
-#include "Framework/Emitter.h"
-#include "Renderer/Particle.h"
-#include "Renderer/ParticleSystem.h"
 
 #include "SpaceGame.h"
 
 using namespace std;
 using vec2 = yogi::Vector2;
 
+
+void zero(int v)
+{
+	v = 0;
+}
+
+void zero(int* v)
+{
+	*v = 0;
+}
+
+void zero_ref(int& v)
+{
+	v = 0;
+}
+
 int main(int argc, char* argv[])
 {
+	int i = 5;
+	zero(i);
+	cout << i << endl;
 
+	zero(&i);
+	cout << i << endl;
+
+	i = 3;
+	cout << i << endl;
+	zero_ref(i);
+	cout << i << endl;
 
 	INFO_LOG("Hello World");
 
@@ -47,20 +63,6 @@ int main(int argc, char* argv[])
 
 	unique_ptr<SpaceGame> game = make_unique<SpaceGame>();
 	game->Init();
-	//input
-
-
-	//renderer
-
-	//text
-
-	yogi::Model model;
-	model.Load("ship.txt");
-
-	yogi::Model enemyModel;
-	enemyModel.Load("enemy.txt");
-
-	//makes scene and player
 	
 
 
@@ -96,7 +98,7 @@ int main(int argc, char* argv[])
 		//draw game
 
 
-		yogi::g_renderer.SetColor(0, 0, 0, 0);
+		yogi::g_renderer.SetColor(200, 180, 255, 1);
 		yogi::g_renderer.BeginFrame();
 
 

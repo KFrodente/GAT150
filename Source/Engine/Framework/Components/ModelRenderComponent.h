@@ -13,6 +13,6 @@ namespace yogi
 		void Draw(class Renderer& renderer) override;
 
 	public:
-		res_t<Model> m_texture;
+		res_t<Model> m_model;
 	};
 }

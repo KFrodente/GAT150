@@ -3,10 +3,11 @@
 #include "Components/Component.h"
 #include <memory>
 #include "Renderer/Model.h"
+#include "Object.h"
 
 namespace yogi
 {
-	class GameObject
+	class GameObject : public Object
 	{
 	public:
 
@@ -17,6 +18,9 @@ namespace yogi
 		GameObject(const yogi::Transform& transform, std::shared_ptr<Model> model) :
 			m_transform{ transform }
 		{}
+
+		virtual bool Initialize() override;
+		virtual void OnDestroy() override;
 
 		virtual void Update(float dt);
 		virtual void Draw(yogi::Renderer& renderer);

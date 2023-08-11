@@ -3,16 +3,12 @@
 #include "Enemy.h"
 
 #include "Framework/Scene.h"
-#include "Framework/Components/SpriteComponent.h"
-#include "Framework/Components/EnginePhysicsComponent.h"
+#include "Framework/Framework.h"
 
 #include "Audio/AudioSystem.h"
 #include "Input/InputSystem.h"
 #include "Renderer/Renderer.h"
-#include "Renderer/ModelManager.h"
-#include "Renderer/Text.h"
-#include "Framework/Emitter.h"
-#include "Framework/Resource/ResourceManager.h"
+
 
 SpaceGame g_spaceGame;
 const int g_gridYSpots[6] = { 75, 175, 275, 375, 475, 575 };
@@ -108,16 +104,15 @@ void SpaceGame::Update(float dt)
 		m_scene->RemoveAll();
 	{
 			//create player
-			std::unique_ptr<Player> player = std::make_unique<Player>(0.5f, yogi::Rad2Deg(.0025f), yogi::Transform{ { g_gridXSpots[0], g_gridYSpots[0]}, yogi::Deg2Rad(0), 3 });
+			std::unique_ptr<Player> player = std::make_unique<Player>(0.5f, yogi::Rad2Deg(.0025f), yogi::Transform{ { g_gridXSpots[0], g_gridYSpots[0]}, yogi::Deg2Rad(0), 2.0f });
 		player->m_tag = "Player";
 		player->m_game = this;
 		//player->SetDamping(0.25f);
 
 		//create components
-		std::unique_ptr<yogi::SpriteComponent> component = std::make_unique<yogi::SpriteComponent>();
-		component->m_texture = yogi::g_resources.Get<yogi::Texture>("Duck.png", yogi::g_renderer);
-
-		player->AddComponent(std::move(component));
+		auto renderComponent = std::make_unique<yogi::SpriteComponent>();
+		renderComponent->m_texture = yogi::g_resources.Get<yogi::Texture>("Duck.png", yogi::g_renderer);
+		player->AddComponent(std::move(renderComponent));
 
 		auto physicsComponent = std::make_unique<yogi::EnginePhysicsComponent>();
 		player->AddComponent(std::move(physicsComponent));

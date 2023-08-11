@@ -1,7 +1,6 @@
 #pragma once
-#include "Core/Color.h"
-#include "Renderer/Renderer.h"
-#include "Core/Vector2.h"
+#include "Core/Math/Color.h"
+#include "Core/Math/Vector2.h"
 
 namespace yogi
 {
@@ -29,7 +28,7 @@ namespace yogi
 			m_isActive = true;
 		}
 		void Update(float dt);
-		void Draw(Renderer& renderer);
+		void Draw(class Renderer& renderer);
 
 			friend class ParticleSystem;
 	private:

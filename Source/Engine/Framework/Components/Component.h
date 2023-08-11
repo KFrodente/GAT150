@@ -1,8 +1,8 @@
 #pragma once
-
+#include "Framework/Object.h"
 namespace yogi
 {
-	class Component
+	class Component : public Object
 	{
 	public:
 		virtual void Update(float dt) = 0;

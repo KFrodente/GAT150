@@ -4,9 +4,9 @@
 #include "FileIO.h"
 #include "Time.h"
 #include "Core.h"
-#include "Transform.h"
+#include "Math\Transform.h"
 
-#include "Color.h"
-#include "Vector2.h"
+#include "Math\Color.h"
+#include "Math\Vector2.h"
 #include "Random.h"
-#include "MathUtils.h"
+#include "Math\MathUtils.h"
