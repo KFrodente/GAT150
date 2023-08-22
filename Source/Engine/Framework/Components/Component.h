@@ -9,7 +9,7 @@ namespace yogi
 
 		friend class GameObject;
 
-	protected:
+	public:
 		class GameObject* m_owner = nullptr;
 	};
 }

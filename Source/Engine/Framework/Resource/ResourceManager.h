@@ -3,14 +3,20 @@
 #include <map>
 #include <memory>
 #include "Resource.h"
+#include "Framework/Singleton.h"
+
+#define GET_RESOURCE(type, filename, ...) yogi::ResourceManager::Instance().Get<type>(filename, __VA_ARGS__)
 
 namespace yogi
 {
-	class ResourceManager
+	class ResourceManager : public Singleton<ResourceManager>
 	{
 	public:
 		template<typename T, typename ... TArgs>
 		res_t<T> Get(const std::string& filename, TArgs ... args);
+
+	public:
+		ResourceManager() = default;
 	private:
 		std::map<std::string, res_t<Resource>> m_resources;
 	};
@@ -32,5 +38,4 @@ namespace yogi
 		return resource;
 	}
 
-	extern ResourceManager g_resources;
 }

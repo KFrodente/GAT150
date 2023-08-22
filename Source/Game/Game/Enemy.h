@@ -15,6 +15,8 @@ public:
 		m_damage = 25;
 	}
 
+	bool Initialize() override;
+
 	void SetYPos(int yPos) {
 		m_yPos = yPos;
 	}

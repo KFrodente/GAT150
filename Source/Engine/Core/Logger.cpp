@@ -4,7 +4,6 @@
 
 namespace yogi 
 {
-	Logger g_logger(LogLevel::INFO, &std::cout, "log.txt");
 	bool Logger::Log(LogLevel logLevel, const std::string& filename, int line)
 	{
 		if (logLevel < m_logLevel) return false;

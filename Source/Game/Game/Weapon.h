@@ -1,23 +1,30 @@
 #pragma once
 #include "Framework/GameObject.h"
 
-class Weapon : public yogi::GameObject
+namespace yogi
 {
-public:
-
-	Weapon(float speed, const yogi::Transform& transform) :
-		GameObject{ transform },
-		m_speed{ speed }
+	class Weapon : public GameObject
 	{
-		m_lifespan = -1.0f;
-		m_timeTillDamage = 3.0f;
-		m_damage = 50;
-		m_health = 1;
-	}
+	public:
+		CLASS_DECLARATION(Weapon)
 
-	void Update(float dt) override;
-	void OnCollision(GameObject* other) override;
-
-private:
-	float m_speed = 0;
-};
+		Weapon() = default;
+		/*Weapon(float speed, const yogi::Transform& transform) :
+			GameObject{ transform },
+			speed{ speed }
+		{
+			lifespan = -1.0f;
+			m_timeTillDamage = 3.0f;
+			m_damage = 50;
+			health = 1;
+		}*/
+	
+		bool Initialize() override;
+	
+		void Update(float dt) override;
+		void OnCollision(GameObject* other) override;
+	
+	private:
+		float speed = 0;
+	};
+}

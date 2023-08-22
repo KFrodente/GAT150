@@ -1,5 +1,6 @@
 #pragma once
 #include "Framework/GameObject.h"
+#include "Framework/Components/PhysicsComponent.h"
 
 class Player : public yogi::GameObject 
 {
@@ -10,11 +11,13 @@ public:
 		m_speed{ speed },
 		m_turnRate{ turnRate }
 	{
-		m_health = m_maxHealth;
+		health = m_maxHealth;
 		m_damage = 0;
 	}
 
-	int GetHealth() { return m_health; }
+	int GetHealth() { return health; }
+
+	bool Initialize() override;
 
 	void Update(float dt) override;
 	void OnCollision(GameObject* other) override;
@@ -28,4 +31,6 @@ private:
 	int m_xPos = 0;
 	float m_speed = 0;
 	float m_turnRate = 0;
+
+	yogi::PhysicsComponent* m_physicsComponent = nullptr;
 };

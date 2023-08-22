@@ -12,5 +12,10 @@
 #include "Components/EnginePhysicsComponent.h"
 #include "Components/ModelRenderComponent.h"
 
+#include "Components/CollisionComponent.h"
+#include "Components/CircleCollisionComponent.h"
+
 #include "Resource/Resource.h"
 #include "Resource/ResourceManager.h"
+
+#include "Factory.h"

@@ -12,6 +12,8 @@
 
 #include "SpaceGame.h"
 
+#include "Physics/PhysicsSystem.h"
+
 using namespace std;
 using vec2 = yogi::Vector2;
 
@@ -33,25 +35,42 @@ void zero_ref(int& v)
 
 int main(int argc, char* argv[])
 {
-	int i = 5;
-	zero(i);
-	cout << i << endl;
 
-	zero(&i);
-	cout << i << endl;
-
-	i = 3;
-	cout << i << endl;
-	zero_ref(i);
-	cout << i << endl;
+	//yogi::Factory::Instance().Register<yogi::SpriteComponent>("SpriteComponent");
 
 	INFO_LOG("Hello World");
 
-
-
+	yogi::setFilePath("assets");
 	yogi::MemoryTracker::Initialize();
 	yogi::seedRandom((unsigned int)time(nullptr));
-	yogi::setFilePath("assets");
+	
+	yogi::PhysicsSystem::Instance().Initialize();
+	/*rapidjson::Document document;
+	yogi::Json::Load("json.txt", document);
+
+	int i1;
+	yogi::Json::Read(document, "integer1", i1);
+	std::cout << i1 << std::endl;
+
+	int i2;
+	yogi::Json::Read(document, "integer2", i2);
+	std::cout << i2 << std::endl;
+	
+	std::string str;
+	yogi::Json::Read(document, "string", str);
+	std::cout << str << std::endl;
+	
+	bool boole;
+	yogi::Json::Read(document, "boolean", boole);
+    std::cout << boole << std::endl;
+	
+	float f;
+	yogi::Json::Read(document, "float", f);
+	std::cout << f << std::endl;
+
+	yogi::vec2 v2;
+	yogi::Json::Read(document, "vector2", v2);
+	std::cout << v2 << std::endl;*/
 
 	yogi::g_renderer.Initialize();
 	yogi::g_renderer.CreateWindow("CSC196", 800, 600);

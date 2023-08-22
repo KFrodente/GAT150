@@ -6,11 +6,33 @@
 #include "Renderer/Renderer.h"
 #include "Framework/Components/SpriteComponent.h"
 #include "Framework/Resource/ResourceManager.h"
+#include "Framework/Components/CollisionComponent.h"
+#include "Framework/Components/CircleCollisionComponent.h"
 
 #include "Framework/Components/PhysicsComponent.h"
 
 #include "Framework/Scene.h"
 #include "Audio/AudioSystem.h"
+bool Player::Initialize()
+{
+	GameObject::Initialize();
+
+	m_physicsComponent = GetComponent<yogi::PhysicsComponent>();
+	auto collisionComponent = GetComponent<yogi::CollisionComponent>();
+	if (collisionComponent)
+	{
+		auto renderComponent = GetComponent<yogi::RenderComponent>();
+		if (renderComponent)
+		{
+			float scale = transform.scale;
+			collisionComponent->m_radius = renderComponent->GetRadius() * scale;
+		}
+	}
+
+	return true;
+}
+
+
 void Player::Update(float dt)
 {
 	GameObject::Update(dt);
@@ -20,7 +42,7 @@ void Player::Update(float dt)
 	if (m_game->heal)
 	{
 		m_maxHealth += 25;
-		m_health = m_maxHealth;
+		health = m_maxHealth;
 		m_game->heal = false;
 	}
 	//movement
@@ -43,38 +65,49 @@ void Player::Update(float dt)
 	//float thrust = 0;
 	//if (yogi::g_inputSystem.GetKeyDown(SDL_SCANCODE_S)) thrust = 1;
 	//yogi::vec2 forward = yogi::vec2{0, -1).Rotate(m_transform.rotation;
-	//auto physicsComponent = GetComponent<yogi::PhysicsComponent>();
-	//physicsComponent->ApplyForce(forward * m_speed * thrust);
+	//m_physicsComponent->ApplyForce(forward * m_speed * thrust);
 
-
-	m_fireTimer -= dt;
-	//fire weapon
-	if (yogi::g_inputSystem.GetKeyDown(SDL_SCANCODE_SPACE)/* && !yogi::g_inputSystem.GetPreviousKeyDown(SDL_SCANCODE_SPACE)*/ && m_fireTimer <= 0)
-	{
-		yogi::g_audioSystem.PlayOneShot("hitSound1", false);
-		m_fireTimer = m_fireRate;
-		//create weapon
-		yogi::Transform transform{ m_transform.position, yogi::Deg2Rad(90), .5f};
-		std::unique_ptr<Weapon> weapon = std::make_unique<Weapon>( 15.0f, transform);
-		weapon->m_tag = "PlayerBullet"; //in the weapon add a timer that the OnCollision method checks, if this timer is less than 0, destroy player.
-		weapon->m_game = this->m_game;
-
-		std::unique_ptr<yogi::SpriteComponent> component = std::make_unique<yogi::SpriteComponent>();
-		component->m_texture = yogi::g_resources.Get<yogi::Texture>("PlayerBullet.png", yogi::g_renderer);
-
-		weapon->AddComponent(std::move(component));
+	if (yogi::g_inputSystem.GetKeyDown(SDL_SCANCODE_SPACE)/* && !yogi::g_inputSystem.GetPreviousKeyDown(SDL_SCANCODE_SPACE)*/ && m_fireTimer <= 0) {
+		auto weapon = INSTANTIATE(Weapon, "Rocket");
+		weapon->transform = { transform.position, yogi::Deg2Rad(90), .5f};
+		weapon->Initialize();
 		m_scene->Add(std::move(weapon));
+
 	}
-	if (yogi::g_inputSystem.GetKeyDown(SDL_SCANCODE_T)) yogi::g_time.SetTimeScale(0.5f);
-	else yogi::g_time.SetTimeScale(1);  
+	//m_fireTimer -= dt;
+	////fire weapon
+	//if (yogi::g_inputSystem.GetKeyDown(SDL_SCANCODE_SPACE)/* && !yogi::g_inputSystem.GetPreviousKeyDown(SDL_SCANCODE_SPACE)*/ && m_fireTimer <= 0)
+	//{
+	//	yogi::g_audioSystem.PlayOneShot("hitSound1", false);
+	//	m_fireTimer = m_fireRate;
+	//	//create weapon
+	//	yogi::Transform transform{ m_transform.position, yogi::Deg2Rad(90), .5f};
+	//	std::unique_ptr<Weapon> weapon = std::make_unique<Weapon>( 15.0f, transform);
+	//	weapon->m_tag = "PlayerBullet"; //in the weapon add a timer that the OnCollision method checks, if this timer is less than 0, destroy player.
+	//	weapon->m_game = this->m_game;
 
-	m_transform.position.y = (float)g_gridYSpots[m_yPos];
-	m_transform.position.x = (float)g_gridXSpots[m_xPos];
+	//	std::unique_ptr<yogi::SpriteComponent> component = std::make_unique<yogi::SpriteComponent>();
+	//	component->m_texture = GET_RESOURCE(yogi::Texture, "PlayerBullet.png", yogi::g_renderer);
 
-	m_game->SetHealth(m_health);
+	//	auto collisionComponent = std::make_unique<yogi::CircleCollisionComponent>();
+	//	collisionComponent->m_radius = 30.0f;
+	//	weapon->AddComponent(std::move(collisionComponent));
+
+	//	weapon->AddComponent(std::move(component));
+
+	//	weapon->Initialize();
+	//	m_scene->Add(std::move(weapon));
+	//}
+	//if (yogi::g_inputSystem.GetKeyDown(SDL_SCANCODE_T)) yogi::g_time.SetTimeScale(0.5f);
+	//else yogi::g_time.SetTimeScale(1);  
+
+	transform.position.y = (float)g_gridYSpots[m_yPos];
+	transform.position.x = (float)g_gridXSpots[m_xPos];
+
+	m_game->SetHealth(health);
 
 
-	if (m_health <= 0)
+	if (health <= 0)
 	{
 		dynamic_cast<SpaceGame*>(m_game)->SetState(SpaceGame::eState::PLAYERDEADSTART);
 	}
@@ -82,13 +115,13 @@ void Player::Update(float dt)
 
 void Player::OnCollision(GameObject* other)
 {
-	if ((other->m_tag == "EnemyBullet" && other->m_timeTillDamage < 0) || other->m_tag == "Enemy")
+	if ((other->tag == "EnemyBullet" && other->m_timeTillDamage < 0) || other->tag == "Enemy")
 	{
-		m_health -= other->m_damage;
+		health -= other->m_damage;
 	}
-	if (other->m_tag == "SpecialBullet")
+	if (other->tag == "SpecialBullet")
 	{
-		m_health -= other->m_damage;
+		health -= other->m_damage;
 	}
 
 }

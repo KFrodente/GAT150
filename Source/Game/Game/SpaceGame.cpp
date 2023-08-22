@@ -10,6 +10,7 @@
 #include "Renderer/Renderer.h"
 
 
+
 SpaceGame g_spaceGame;
 const int g_gridYSpots[6] = { 75, 175, 275, 375, 475, 575 };
 const int g_gridXSpots[6] = { 25, 175, 325, 475, 625, 775 };
@@ -18,22 +19,22 @@ float g_moveEnemyTimer = 50.0f;
 bool SpaceGame::Init()
 {
 	//text
-	//m_font = yogi::g_resources.Get<yogi::Font>("BodoniFLF-Bold.ttf", 24);
+	m_font = GET_RESOURCE(yogi::Font, "BodoniFLF-Bold.ttf", 24);
 
-	m_scoreText = std::make_unique<yogi::Text>(yogi::g_resources.Get<yogi::Font>("BodoniFLF-Bold.ttf", 24));
+	m_scoreText = std::make_unique<yogi::Text>(m_font);
 	m_scoreText->Create(yogi::g_renderer, "SCORE 0000", yogi::Color{0.5f, 0.8f, .1f, 1});
 
-	m_neededScoreText = std::make_unique<yogi::Text>(yogi::g_resources.Get<yogi::Font>("BodoniFLF-Bold.ttf", 24));
+	m_neededScoreText = std::make_unique<yogi::Text>(m_font);
 	m_neededScoreText->Create(yogi::g_renderer, "NEXT CHANGE", yogi::Color{1.0f, 0.8f, .1f, 1});
 	
 
-	m_titleText = std::make_unique<yogi::Text>(yogi::g_resources.Get<yogi::Font>("BodoniFLF-Bold.ttf", 24));
+	m_titleText = std::make_unique<yogi::Text>(m_font);
 	m_titleText->Create(yogi::g_renderer, "DODGE GAME [SPACE] TO START", yogi::Color{0.7f, 0.25f, 1, 1});
 	
-	m_healthText = std::make_unique<yogi::Text>(yogi::g_resources.Get<yogi::Font>("BodoniFLF-Bold.ttf", 24));
+	m_healthText = std::make_unique<yogi::Text>(m_font);
 	m_healthText->Create(yogi::g_renderer, "HEALTH: ", yogi::Color{0.8f, 1, 0.8f, 1});
 	
-	m_gameOverText = std::make_unique<yogi::Text>(yogi::g_resources.Get<yogi::Font>("BodoniFLF-Bold.ttf", 24));
+	m_gameOverText = std::make_unique<yogi::Text>(m_font);
 	m_gameOverText->Create(yogi::g_renderer, "YOU DIED [R] TO RESTART", yogi::Color{1, 0, 0, 1});
 
 	//audio
@@ -47,6 +48,8 @@ bool SpaceGame::Init()
 
 	//player and scene
 	m_scene = std::make_unique<yogi::Scene>();
+	m_scene->Load("scene.json");
+	m_scene->Initialize();
 
 
 
@@ -86,13 +89,18 @@ void SpaceGame::Update(float dt)
 			
 			yogi::Transform transform{ { yogi::g_inputSystem.GetMousePosition() }, 0, 1 };
 			auto emitter = std::make_unique<yogi::Emitter>(transform, data);
-			emitter->m_lifespan = 1.0f;
+			emitter->lifespan = 1.0f;
 			m_scene->Add(std::move(emitter));
 		}
 	}
 
 
-		if (yogi::g_inputSystem.GetKeyDown(SDL_SCANCODE_SPACE)) m_state = eState::STARTGAME;
+	if (yogi::g_inputSystem.GetKeyDown(SDL_SCANCODE_SPACE))
+	{
+		m_state = eState::STARTGAME;
+		/*auto gameObject = m_scene->GetGameObjectByName("Background");
+		if (gameObject) gameObject->active = false;*/
+	}
 		break;
 	case eState::STARTGAME:
 		//m_health = 10;
@@ -104,18 +112,24 @@ void SpaceGame::Update(float dt)
 		m_scene->RemoveAll();
 	{
 			//create player
-			std::unique_ptr<Player> player = std::make_unique<Player>(0.5f, yogi::Rad2Deg(.0025f), yogi::Transform{ { g_gridXSpots[0], g_gridYSpots[0]}, yogi::Deg2Rad(0), 2.0f });
-		player->m_tag = "Player";
+		std::unique_ptr<Player> player = std::make_unique<Player>(0.5f, yogi::Rad2Deg(.0025f), yogi::Transform{ { g_gridXSpots[0], g_gridYSpots[0]}, yogi::Deg2Rad(0), 2.0f });
+		player->tag = "Player";
 		player->m_game = this;
 		//player->SetDamping(0.25f);
 
 		//create components
-		auto renderComponent = std::make_unique<yogi::SpriteComponent>();
-		renderComponent->m_texture = yogi::g_resources.Get<yogi::Texture>("Duck.png", yogi::g_renderer);
+		auto renderComponent = CREATE_CLASS(SpriteComponent);//std::make_unique<yogi::SpriteComponent>();
+		renderComponent->m_texture = GET_RESOURCE(yogi::Texture, "Duck.png", yogi::g_renderer);
 		player->AddComponent(std::move(renderComponent));
 
-		auto physicsComponent = std::make_unique<yogi::EnginePhysicsComponent>();
+		auto physicsComponent = CREATE_CLASS(EnginePhysicsComponent);
 		player->AddComponent(std::move(physicsComponent));
+
+		auto collisionComponent = CREATE_CLASS(CircleCollisionComponent);
+		collisionComponent->m_radius = 30.0f;
+		player->AddComponent(std::move(collisionComponent));
+
+		player->Initialize();
 
 		m_scene->Add(move(player));
 
@@ -139,13 +153,18 @@ void SpaceGame::Update(float dt)
 			int randomYPos = yogi::random(6);
 			std::unique_ptr<Enemy> enemy = std::make_unique<Enemy>(yogi::randomf(1.0f, 5.0f), yogi::Pi, yogi::Transform{{g_gridXSpots[5], g_gridYSpots[randomYPos]}, yogi::Deg2Rad(-90), 3});
 			enemy->SetYPos(randomYPos);
-			enemy->m_tag = "Enemy";
+			enemy->tag = "Enemy";
 			enemy->m_game = this;
 
 			std::unique_ptr<yogi::SpriteComponent> component = std::make_unique<yogi::SpriteComponent>();
-			component->m_texture = yogi::g_resources.Get<yogi::Texture>("Duck.png", yogi::g_renderer);
-
+			component->m_texture = GET_RESOURCE(yogi::Texture, "Duck.png", yogi::g_renderer);
 			enemy->AddComponent(std::move(component));
+
+			auto collisionComponent = std::make_unique<yogi::CircleCollisionComponent>();
+			collisionComponent->m_radius = 30.0f;
+			enemy->AddComponent(std::move(collisionComponent));
+
+			enemy->Initialize();
 			m_scene->Add(move(enemy));
 		}
 		break;

@@ -6,6 +6,7 @@ namespace yogi
 	class EnginePhysicsComponent : public PhysicsComponent
 	{
 	public:
+		CLASS_DECLARATION(EnginePhysicsComponent)
 
 
 		// Inherited via PhysicsComponent

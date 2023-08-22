@@ -1,13 +1,16 @@
 #pragma once
+#include "Framework/Singleton.h"
+
 #include <string>
 #include <cassert>
 #include <fstream>
+#include <iostream>
 
 #ifdef _DEBUG
-#define INFO_LOG(message)				{ if (yogi::g_logger.Log(yogi::LogLevel::INFO, __FILE__, __LINE__))	   { yogi::g_logger << message << "\n";} }
-#define WARNING_LOG(message)			{ if (yogi::g_logger.Log(yogi::LogLevel::WARNING, __FILE__, __LINE__)) {yogi::g_logger << message << "\n";} }
-#define ERROR_LOG(message)				{ if (yogi::g_logger.Log(yogi::LogLevel::ERROR, __FILE__, __LINE__))   {yogi::g_logger << message << "\n";} }
-#define ASSERT_LOG(condition, message)	{ if (!condition && yogi::g_logger.Log(yogi::LogLevel::ASSERT, __FILE__, __LINE__))  {yogi::g_logger << message << "\n";} assert(condition); }
+#define INFO_LOG(message)				{ if (yogi::Logger::Instance().Log(yogi::LogLevel::INFO, __FILE__, __LINE__))	   { yogi::Logger::Instance() << message << "\n";} }
+#define WARNING_LOG(message)			{ if (yogi::Logger::Instance().Log(yogi::LogLevel::WARNING, __FILE__, __LINE__)) {yogi::Logger::Instance() << message << "\n";} }
+#define ERROR_LOG(message)				{ if (yogi::Logger::Instance().Log(yogi::LogLevel::ERROR, __FILE__, __LINE__))   {yogi::Logger::Instance() << message << "\n";} }
+#define ASSERT_LOG(condition, message)	{ if (!condition && yogi::Logger::Instance().Log(yogi::LogLevel::ASSERT, __FILE__, __LINE__))  {yogi::Logger::Instance() << message << "\n";} assert(condition); }
 #else 
 #define INFO_LOG(message)		{}
 #define WARNING_LOG(message)	{}
@@ -21,10 +24,10 @@ namespace yogi
 		INFO, WARNING, ERROR, ASSERT
 	};
 
-	class Logger
+	class Logger : public Singleton<Logger>
 	{
 	public:
-		Logger(LogLevel logLevel, std::ostream* ostream, const std::string& filename = "") :
+		Logger(LogLevel logLevel = LogLevel::INFO, std::ostream* ostream = &std::cout, const std::string& filename = "log.txt") :
 			m_ostream{ ostream },
 			m_logLevel{ logLevel }
 		{
@@ -41,7 +44,6 @@ namespace yogi
 		std::ostream* m_ostream = nullptr;
 		std::ofstream m_fstream;
 	};
-	extern Logger g_logger;
 
 	template<typename T>
 	inline Logger& Logger::operator<<(T value)

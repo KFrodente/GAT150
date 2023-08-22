@@ -53,6 +53,6 @@ namespace yogi
 		stream.read(buffer.data(), size);
 		stream.close();
 
-		return false;
+		return true;
 	}
 }
