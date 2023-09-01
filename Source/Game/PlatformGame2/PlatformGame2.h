@@ -8,7 +8,7 @@ class PlatformGame2 : public yogi::Game, yogi::IEventListener
 public:
 	enum class eState
 	{
-		TITLE, STARTGAME, STARTLEVEL1, LEVEL1, GAME, PLAYERDEAD, GAMEOVER
+		TITLE, STARTGAME, STARTLEVEL1, LEVEL1, GAMEOVER
 	};
 
 

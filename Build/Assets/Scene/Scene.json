@@ -216,7 +216,7 @@
 				{
 					"type": "Box2DCollisionComponent",
 					"restitution": 0.7,
-					"size": [ 7, 7 ]
+					"size": [ 5, 5 ]
 				}
 			]
 		},
@@ -267,7 +267,7 @@
 			"tag": "Hole",
 			"prototype": true,
 			"transform": {
-				"position": [ 590, 560 ],
+				"position": [ 590, 580 ],
 				"scale": 1,
 				"rotation": 0
 			},

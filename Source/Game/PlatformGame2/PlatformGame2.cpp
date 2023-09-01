@@ -91,14 +91,6 @@ void PlatformGame2::Update(float dt)
 
 	}
 		break;
-	case eState::GAME:
-		
-		break;
-
-	case eState::PLAYERDEAD:
-		
-		break;
-
 	case eState::GAMEOVER:
 	{
 		int hits = m_scene->GetGameObject<yogi::Player>()->hits;
