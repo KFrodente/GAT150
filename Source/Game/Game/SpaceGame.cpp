@@ -28,8 +28,8 @@ bool SpaceGame::Init()
 	m_neededScoreText->Create(yogi::g_renderer, "NEXT CHANGE", yogi::Color{1.0f, 0.8f, .1f, 1});
 	
 
-	m_titleText = std::make_unique<yogi::Text>(m_font);
-	m_titleText->Create(yogi::g_renderer, "DODGE GAME [SPACE] TO START", yogi::Color{0.7f, 0.25f, 1, 1});
+	//m_titleText = std::make_unique<yogi::Text>(m_font);
+	//m_titleText->Create(yogi::g_renderer, "DODGE GAME [SPACE] TO START", yogi::Color{0.7f, 0.25f, 1, 1});
 	
 	m_healthText = std::make_unique<yogi::Text>(m_font);
 	m_healthText->Create(yogi::g_renderer, "HEALTH: ", yogi::Color{0.8f, 1, 0.8f, 1});
@@ -48,10 +48,12 @@ bool SpaceGame::Init()
 
 	//player and scene
 	m_scene = std::make_unique<yogi::Scene>();
-	m_scene->Load("scene.json");
+	m_scene->Load("Scene/spacescene.json");
 	m_scene->Initialize();
 
-
+	//add events
+	yogi::EventManager::Instance().Subscribe("OnAddPoints", this, std::bind(&SpaceGame::OnAddPoints, this, std::placeholders::_1));
+	yogi::EventManager::Instance().Subscribe("OnPlayerDead", this, std::bind(&SpaceGame::OnPlayerDead, this, std::placeholders::_1));
 
 	return true;
 }
@@ -67,6 +69,7 @@ void SpaceGame::Update(float dt)
 	{
 	case eState::TITLE:
 	{
+		m_scene->GetGameObjectByName("Title")->active = true;
 		yogi::EmitterData data;
 		data.burst = false;
 		data.burstCount = 1;
@@ -97,6 +100,7 @@ void SpaceGame::Update(float dt)
 
 	if (yogi::g_inputSystem.GetKeyDown(SDL_SCANCODE_SPACE))
 	{
+		m_scene->GetGameObjectByName("Title")->active = false;
 		m_state = eState::STARTGAME;
 		/*auto gameObject = m_scene->GetGameObjectByName("Background");
 		if (gameObject) gameObject->active = false;*/
@@ -112,26 +116,26 @@ void SpaceGame::Update(float dt)
 		m_scene->RemoveAll();
 	{
 			//create player
-		std::unique_ptr<Player> player = std::make_unique<Player>(0.5f, yogi::Rad2Deg(.0025f), yogi::Transform{ { g_gridXSpots[0], g_gridYSpots[0]}, yogi::Deg2Rad(0), 2.0f });
-		player->tag = "Player";
-		player->m_game = this;
-		//player->SetDamping(0.25f);
+		//std::unique_ptr<Player> player = std::make_unique<Player>(0.5f, yogi::Rad2Deg(.0025f), yogi::Transform{ { g_gridXSpots[0], g_gridYSpots[0]}, yogi::Deg2Rad(0), 2.0f });
+		//player->tag = "Player";
+		//player->m_game = this;
+		////player->SetDamping(0.25f);
 
-		//create components
-		auto renderComponent = CREATE_CLASS(SpriteComponent);//std::make_unique<yogi::SpriteComponent>();
-		renderComponent->m_texture = GET_RESOURCE(yogi::Texture, "Duck.png", yogi::g_renderer);
-		player->AddComponent(std::move(renderComponent));
+		////create components
+		//auto renderComponent = CREATE_CLASS(SpriteComponent);//std::make_unique<yogi::SpriteComponent>();
+		//renderComponent->m_texture = GET_RESOURCE(yogi::Texture, "Duck.png", yogi::g_renderer);
+		//player->AddComponent(std::move(renderComponent));
 
-		auto physicsComponent = CREATE_CLASS(EnginePhysicsComponent);
-		player->AddComponent(std::move(physicsComponent));
+		//auto physicsComponent = CREATE_CLASS(EnginePhysicsComponent);
+		//player->AddComponent(std::move(physicsComponent));
 
-		auto collisionComponent = CREATE_CLASS(CircleCollisionComponent);
-		collisionComponent->m_radius = 30.0f;
-		player->AddComponent(std::move(collisionComponent));
+		////auto collisionComponent = CREATE_CLASS(CircleCollisionComponent);
+		////collisionComponent->m_radius = 30.0f;
+		////player->AddComponent(std::move(collisionComponent));
 
-		player->Initialize();
+		//player->Initialize();
 
-		m_scene->Add(move(player));
+		//m_scene->Add(move(player));
 
 		m_state = eState::GAME;
 	}
@@ -156,7 +160,7 @@ void SpaceGame::Update(float dt)
 			enemy->tag = "Enemy";
 			enemy->m_game = this;
 
-			std::unique_ptr<yogi::SpriteComponent> component = std::make_unique<yogi::SpriteComponent>();
+			/*std::unique_ptr<yogi::SpriteComponent> */auto component = CREATE_CLASS(SpriteComponent);/*std::make_unique<yogi::SpriteComponent>();*/
 			component->m_texture = GET_RESOURCE(yogi::Texture, "Duck.png", yogi::g_renderer);
 			enemy->AddComponent(std::move(component));
 
@@ -226,7 +230,7 @@ void SpaceGame::Draw(yogi::Renderer& renderer)
 {
 	if (m_state == eState::TITLE)
 	{
-		m_titleText->Draw(renderer, 200, 300);
+		//m_titleText->Draw(renderer, 200, 300);
 	}
 	else if (m_state == eState::GAMEOVER && m_showDeathText)
 	{
@@ -237,4 +241,15 @@ void SpaceGame::Draw(yogi::Renderer& renderer)
 	m_scoreText->Draw(renderer, 15, 20);
 	m_healthText->Draw(renderer, 600, 20);
 	m_scene->Draw(renderer);
+}
+
+void SpaceGame::OnAddPoints(const yogi::Event& event)
+{
+	m_score += std::get<int>(event.data);
+}
+
+
+void SpaceGame::OnPlayerDead(const yogi::Event& event)
+{
+	m_state = eState::PLAYERDEADSTART;
 }

@@ -1,8 +1,9 @@
 #pragma once
 #include "Framework/Game.h"
+#include "Framework/Event/EventManager.h"
 #include "Renderer/Text.h"
 
-class SpaceGame : public yogi::Game
+class SpaceGame : public yogi::Game, yogi::IEventListener
 {
 public:
 	enum class eState
@@ -21,6 +22,9 @@ public:
 	virtual void Draw(yogi::Renderer& renderer) override;
 
 	void SetState(eState state) { m_state = state; }
+
+	void OnAddPoints(const yogi::Event& event);
+	void OnPlayerDead(const yogi::Event& event);
 
 	//inline void DoDamage(int amount) { this->m_health -= amount; }
 

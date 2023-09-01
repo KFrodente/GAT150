@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Math/Rect.h"
 #include "Json.h"
 #include "Logger.h"
 #include "Memory.h"

@@ -1,0 +1,287 @@
+{
+	"gameobjects": [
+		{
+			"type": "GameObject",
+			"name": "Background",
+			"persistent": true,
+			"transform": {
+				"position": [ 0, 0 ],
+				"scale": 2,
+				"rotation": 0
+			},
+			"components": [
+				{
+					"type": "SpriteComponent",
+					"textureName": "textures/lake.jpg",
+					"source": [ 0, 0, 1080, 1920 ]
+				}
+			]
+		},
+		{
+			"type": "GameObject",
+			"name": "Title",
+			"persistent": false,
+			"transform": {
+				"position": [ 400, 100 ],
+				"scale": 2,
+				"rotation": 0
+			},
+			"components": [
+				{
+					"type": "TextRenderComponent",
+					"fontName": "BodoniFLF-Bold.ttf",
+					"fontSize": 24,
+					"text": "Just Golf\nPar 3",
+					"color": [ 0, 0, 0, 1 ]
+				}
+			]
+		},
+		{
+			"type": "GameObject",
+			"name": "HoleInOne",
+			"persistent": false,
+			"transform": {
+				"position": [ 400, 250 ],
+				"scale": 2,
+				"rotation": 0
+			},
+			"components": [
+				{
+					"type": "TextRenderComponent",
+					"fontName": "BodoniFLF-Bold.ttf",
+					"fontSize": 30,
+					"text": "HOLE IN ONE",
+					"color": [ 0, 0, 0, 1 ]
+				}
+			]
+		},
+		{
+			"type": "GameObject",
+			"name": "Birdie",
+			"persistent": false,
+			"transform": {
+				"position": [ 400, 250 ],
+				"scale": 2,
+				"rotation": 0
+			},
+			"components": [
+				{
+					"type": "TextRenderComponent",
+					"fontName": "BodoniFLF-Bold.ttf",
+					"fontSize": 30,
+					"text": "BIRDIE",
+					"color": [ 0, 0, 0, 1 ]
+				}
+			]
+		},
+		{
+			"type": "GameObject",
+			"name": "OnPar",
+			"persistent": false,
+			"transform": {
+				"position": [ 400, 250 ],
+				"scale": 2,
+				"rotation": 0
+			},
+			"components": [
+				{
+					"type": "TextRenderComponent",
+					"fontName": "BodoniFLF-Bold.ttf",
+					"fontSize": 30,
+					"text": "ON PAR",
+					"color": [ 0, 0, 0, 1 ]
+				}
+			]
+		},
+		{
+			"type": "GameObject",
+			"name": "Bogey",
+			"persistent": false,
+			"transform": {
+				"position": [ 400, 250 ],
+				"scale": 2,
+				"rotation": 0
+			},
+			"components": [
+				{
+					"type": "TextRenderComponent",
+					"fontName": "BodoniFLF-Bold.ttf",
+					"fontSize": 30,
+					"text": "BOGEY",
+					"color": [ 0, 0, 0, 1 ]
+				}
+			]
+		},
+		{
+			"type": "GameObject",
+			"name": "DoubleBogey",
+			"persistent": false,
+			"transform": {
+				"position": [ 400, 250 ],
+				"scale": 2,
+				"rotation": 0
+			},
+			"components": [
+				{
+					"type": "TextRenderComponent",
+					"fontName": "BodoniFLF-Bold.ttf",
+					"fontSize": 30,
+					"text": "DOUBLE BOGEY",
+					"color": [ 0, 0, 0, 1 ]
+				}
+			]
+		},
+		{
+			"type": "GameObject",
+			"name": "TripleBogey",
+			"persistent": false,
+			"transform": {
+				"position": [ 400, 250 ],
+				"scale": 2,
+				"rotation": 0
+			},
+			"components": [
+				{
+					"type": "TextRenderComponent",
+					"fontName": "BodoniFLF-Bold.ttf",
+					"fontSize": 30,
+					"text": "TRIPLE BOGEY",
+					"color": [ 0, 0, 0, 1 ]
+				}
+			]
+		},
+		{
+			"type": "GameObject",
+			"name": "QuadBogey",
+			"persistent": false,
+			"transform": {
+				"position": [ 400, 250 ],
+				"scale": 2,
+				"rotation": 0
+			},
+			"components": [
+				{
+					"type": "TextRenderComponent",
+					"fontName": "BodoniFLF-Bold.ttf",
+					"fontSize": 30,
+					"text": "QUADRUPLE BOGEY",
+					"color": [ 0, 0, 0, 1 ]
+				}
+			]
+		},
+		{
+			"type": "GameObject",
+			"name": "PowerText",
+			"persistent": false,
+			"transform": {
+				"position": [ 50, 50 ],
+				"scale": 1,
+				"rotation": 0
+			},
+			"components": [
+				{
+					"type": "TextRenderComponent",
+					"fontName": "BodoniFLF-Bold.ttf",
+					"fontSize": 24,
+					"text": "Power: ",
+					"color": [ 0, 0, 0, 1 ]
+				}
+			]
+		},
+		{
+			"type": "Player",
+			"name": "Player",
+			"prototype": true,
+			"tag": "Player",
+			"transform": {
+				"position": [ 100, 100 ],
+				"scale": 3,
+				"rotation": 0
+			},
+			"speed": 10,
+			"jump": 10,
+			"turnRate": 0.5,
+			"components": [
+				{
+					"type": "SpriteComponent",
+					"textureName": "Textures/GolfBall.png"
+				},
+				{
+					"type": "Box2DPhysicsComponent",
+					"gravityScale": 1.0,
+					"damping": 0,
+					"angularDamping": 2,
+					"constrainAngle": false
+				},
+				{
+					"type": "Box2DCollisionComponent",
+					"restitution": 0.7,
+					"size": [ 7, 7 ]
+				}
+			]
+		},
+		{
+			"type": "GameObject",
+			"name": "Reticle",
+			"persistent": false,
+			"transform": {
+				"position": [ 400, 300 ],
+				"scale": 3,
+				"rotation": 0
+			},
+			"components": [
+				{
+					"type": "SpriteComponent",
+					"textureName": "Textures/Reticle.png",
+					"origin": [ 0, 0.5 ],
+					"flip": true
+				}
+			]
+		},
+		{
+			"type": "GameObject",
+			"name": "Crate",
+			"prototype": true,
+			"transform": {
+				"position": [ 100, 0 ],
+				"scale": 1,
+				"rotation": 0
+			},
+			"components": [
+				{
+					"type": "SpriteComponent",
+					"textureName": "textures/Box.png"
+				},
+				{
+					"type": "Box2DPhysicsComponent"
+				},
+				{
+					"type": "Box2DCollisionComponent",
+					"restitution": 0.0
+				}
+			]
+		},
+		{
+			"type": "Enemy",
+			"name": "Hole",
+			"tag": "Hole",
+			"prototype": true,
+			"transform": {
+				"position": [ 590, 560 ],
+				"scale": 1,
+				"rotation": 0
+			},
+			"components": [
+				{
+					"type": "Box2DPhysicsComponent",
+					"isDynamic": false
+				},
+				{
+					"type": "Box2DCollisionComponent",
+					"isTrigger": true,
+					"size": [ 10, 10 ]
+				}
+			]
+		}
+	]
+}

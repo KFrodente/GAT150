@@ -13,30 +13,65 @@
 #include "SpaceGame.h"
 
 #include "Physics/PhysicsSystem.h"
+#include <functional>
 
 using namespace std;
 using vec2 = yogi::Vector2;
 
-
-void zero(int v)
+void print(int i)
 {
-	v = 0;
+	cout << i << endl;
 }
 
-void zero(int* v)
+int Add(int i1, int i2)
 {
-	*v = 0;
+	return i1 + i2;
 }
 
-void zero_ref(int& v)
+int Sub(int i1, int i2)
 {
-	v = 0;
+	return i1 - i2;
 }
+
+class A
+{
+public:
+	int Add(int i1, int i2)
+	{
+		return i1 + i2;
+	}
+};
+
+union Data
+{
+	int i;
+	char c[6];
+	bool b;
+};
+
 
 int main(int argc, char* argv[])
 {
+	void (*func_ptr)(int) = &print;
+	func_ptr(2);
 
-	//yogi::Factory::Instance().Register<yogi::SpriteComponent>("SpriteComponent");
+	int (*op_ptr)(int, int);
+	op_ptr = Sub;
+
+	func_ptr(op_ptr(7, 3));
+
+	std::function<int(int, int)> op;
+	/*
+	std::function<int(int, int)> op = Sub;
+	func_ptr(op(10, 21));*/
+
+	A a;
+	op = std::bind(&A::Add, &a, std::placeholders::_1, std::placeholders::_2);
+
+	func_ptr(op(7, 3));
+
+	Data data;
+	data.b = true;
 
 	INFO_LOG("Hello World");
 
@@ -45,32 +80,6 @@ int main(int argc, char* argv[])
 	yogi::seedRandom((unsigned int)time(nullptr));
 	
 	yogi::PhysicsSystem::Instance().Initialize();
-	/*rapidjson::Document document;
-	yogi::Json::Load("json.txt", document);
-
-	int i1;
-	yogi::Json::Read(document, "integer1", i1);
-	std::cout << i1 << std::endl;
-
-	int i2;
-	yogi::Json::Read(document, "integer2", i2);
-	std::cout << i2 << std::endl;
-	
-	std::string str;
-	yogi::Json::Read(document, "string", str);
-	std::cout << str << std::endl;
-	
-	bool boole;
-	yogi::Json::Read(document, "boolean", boole);
-    std::cout << boole << std::endl;
-	
-	float f;
-	yogi::Json::Read(document, "float", f);
-	std::cout << f << std::endl;
-
-	yogi::vec2 v2;
-	yogi::Json::Read(document, "vector2", v2);
-	std::cout << v2 << std::endl;*/
 
 	yogi::g_renderer.Initialize();
 	yogi::g_renderer.CreateWindow("CSC196", 800, 600);
@@ -78,7 +87,6 @@ int main(int argc, char* argv[])
 	yogi::g_audioSystem.Initialize();
 	yogi::g_inputSystem.Initialize();
 
-	//yogi::res_t<yogi::Texture> texture = yogi::g_resources.Get<yogi::Texture>("Duck.png", yogi::g_renderer);
 
 	unique_ptr<SpaceGame> game = make_unique<SpaceGame>();
 	game->Init();
@@ -106,10 +114,7 @@ int main(int argc, char* argv[])
 		{
 			quit = true;
 		}
-
-		if (yogi::g_inputSystem.GetKeyDown(SDL_SCANCODE_SPACE) && !yogi::g_inputSystem.GetPreviousKeyDown(SDL_SCANCODE_SPACE))
-		{
-		}
+		yogi::PhysicsSystem::Instance().Update(yogi::g_time.GetDeltaTime());
 
 		//update game
 		game->Update(yogi::g_time.GetDeltaTime());

@@ -1,5 +1,6 @@
 #pragma once
 #include "Framework/GameObject.h"
+#include "Framework/Components/PhysicsComponent.h"
 
 class Enemy : public yogi::GameObject
 {
@@ -26,7 +27,7 @@ public:
 	}
 
 	void Update(float dt) override;
-	void OnCollision(GameObject* other) override;
+	void OnCollisionEnter(GameObject* other) override;
 
 private:
 	float m_speed = 0;
@@ -39,5 +40,6 @@ private:
 
 	int m_xPos = 5;
 	int m_yPos = 0;
+	yogi::PhysicsComponent* m_physicsComponent = nullptr;
 
 };

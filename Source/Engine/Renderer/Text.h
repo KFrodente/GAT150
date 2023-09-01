@@ -18,6 +18,7 @@ namespace yogi
 
 		void Create(Renderer& renderer, const std::string& text, const Color& color);
 		void Draw(Renderer& renderer, int x, int y);
+		void Draw(Renderer& renderer, const class Transform& transform);
 	private:
 		std::shared_ptr<Font> m_font;
 		struct SDL_Texture* m_texture = nullptr;

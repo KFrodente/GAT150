@@ -1,5 +1,6 @@
 #pragma once
 #include "Framework/GameObject.h"
+#include "Framework/Components/PhysicsComponent.h"
 
 namespace yogi
 {
@@ -22,9 +23,11 @@ namespace yogi
 		bool Initialize() override;
 	
 		void Update(float dt) override;
-		void OnCollision(GameObject* other) override;
+		void OnCollisionEnter(GameObject* other) override;
 	
 	private:
 		float speed = 0;
+
+		PhysicsComponent* m_physicsComponent = nullptr;
 	};
 }

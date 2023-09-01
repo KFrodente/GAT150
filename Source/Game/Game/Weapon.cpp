@@ -9,15 +9,12 @@ namespace yogi
 	{
 		GameObject::Initialize();
 
+		m_physicsComponent = GetComponent<PhysicsComponent>();
+
 		auto collisionComponent = GetComponent<yogi::CollisionComponent>();
 		if (collisionComponent)
 		{
-			auto renderComponent = GetComponent<yogi::RenderComponent>();
-			if (renderComponent)
-			{
-				float scale = transform.scale;
-				collisionComponent->m_radius = renderComponent->GetRadius() * scale;
-			}
+			
 		}
 		return true;
 	}
@@ -26,8 +23,9 @@ namespace yogi
 		GameObject::Update(dt);
 		m_timeTillDamage -= dt;
 		yogi::vec2 forward = yogi::vec2{ 0, -1 }.Rotate(transform.rotation);
-		transform.position += forward * speed * yogi::g_time.GetDeltaTime();
-	
+		//transform.position += forward * speed * yogi::g_time.GetDeltaTime();
+		m_physicsComponent->SetVelocity(forward * speed);
+
 		if (transform.position.x > 900 || transform.position.x < 0 ||transform.position.y < 0 || transform.position.y > 800)
 		{
 			health = 0;
@@ -36,7 +34,7 @@ namespace yogi
 		//m_transform.position.y = yogi::Wrap(m_transform.position.y, yogi::g_renderer.GetHeight());
 	}
 	
-	void Weapon::OnCollision(GameObject* other)
+	void Weapon::OnCollisionEnter(GameObject* other)
 	{
 		if (this->tag != "SpecialBullet")
 		{

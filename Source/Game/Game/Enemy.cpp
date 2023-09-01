@@ -80,9 +80,13 @@ void Enemy::Update(float dt)
 
 	m_fireTimer -= dt;
 
-	/*if (m_fireTimer <= 0 && m_health > 0) {
+	if (m_fireTimer <= 0 && health > 0) {
 		m_fireTimer = m_fireRate;
-		yogi::Transform transform1{ m_transform.position, m_transform.rotation, .5f};
+		auto weapon = INSTANTIATE(Weapon, "Weapon");
+		weapon->transform = { transform.position, yogi::Deg2Rad(90), .5f };
+		weapon->Initialize();
+		m_scene->Add(std::move(weapon));
+		/*yogi::Transform transform1{ m_transform.position, m_transform.rotation, .5f};
 		std::unique_ptr<Weapon> weapon = std::make_unique<Weapon>(10.0f, transform1);
 		weapon->m_tag = "EnemyBullet";
 		weapon->m_game = this->m_game;
@@ -95,16 +99,17 @@ void Enemy::Update(float dt)
 		collisionComponent->m_radius = 30.0f;
 		weapon->AddComponent(std::move(collisionComponent));
 		weapon->Initialize();
-		m_scene->Add(std::move(weapon));
-	}*/
+		m_scene->Add(std::move(weapon));*/
+	}
 }
 
-void Enemy::OnCollision(GameObject* other)
+void Enemy::OnCollisionEnter(GameObject* other)
 {
 	if (other->tag == "PlayerBullet" /*&& other->m_timeTillDamage < 0*/)
 	{
 		this->health -= other->m_damage;
-		m_game->AddPoints(100 * (int)m_speed);
+		//m_game->AddPoints(100 * (int)m_speed);
+		yogi::EventManager::Instance().DispatchEvent("OnAddPoints", 100 * (int)m_speed);
 		yogi::g_audioSystem.PlayOneShot("enemyDied", false);
 		//do particles
 		yogi::EmitterData data;

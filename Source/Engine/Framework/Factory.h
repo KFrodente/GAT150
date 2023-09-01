@@ -7,7 +7,7 @@
 
 #define CREATE_CLASS(classname) yogi::Factory::Instance().Create<yogi::classname>(#classname)
 #define CREATE_CLASS_BASE(classbase, classname) yogi::Factory::Instance().Create<yogi::classbase>(classname)
-#define INSTANTIATE(classbase, classname) yogi::Factory::Instance().Create<yogi::classbase>(#classname)
+#define INSTANTIATE(classbase, classname) yogi::Factory::Instance().Create<yogi::classbase>(classname)
 
 
 namespace yogi
@@ -95,6 +95,8 @@ namespace yogi
 		{
 			return std::unique_ptr<T>(dynamic_cast<T*>(iter->second->Create().release()));
 		}
+
+			ERROR_LOG("Class not found in factory: " << key);
 
 		return std::unique_ptr<T>();
 	}

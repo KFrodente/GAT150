@@ -29,6 +29,7 @@ namespace yogi
 		}
 
 		// check collisions
+		/*
 		for (auto iter1 = m_gameObjects.begin(); iter1 != m_gameObjects.end(); iter1++)
 		{
 			for (auto iter2 = std::next(iter1, 1); iter2 != m_gameObjects.end(); iter2++)
@@ -45,6 +46,7 @@ namespace yogi
 				}
 			}
 		}
+		*/
 	}
 	void Scene::Draw(Renderer& renderer)
 	{

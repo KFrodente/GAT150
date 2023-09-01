@@ -19,6 +19,10 @@ namespace yogi
 			transform{ transform }
 		{}
 
+		virtual ~GameObject() {
+			OnDestroy();
+		}
+
 		GameObject(const GameObject& other);
 
 		virtual bool Initialize() override;
@@ -31,8 +35,9 @@ namespace yogi
 		template<typename T>
 		T* GetComponent();
 
-		float GetRadius() { return 20.0f; }
-		virtual void OnCollision(GameObject* other) {}
+
+		virtual void OnCollisionEnter(GameObject* other) {}
+		virtual void OnCollisionExit(GameObject* other) {}
 
 		
 
@@ -50,11 +55,11 @@ namespace yogi
 
 		bool persistent = false;
 		bool prototype = false;
+		bool destroyed = false;
 
 	protected:
 		std::vector<std::unique_ptr<Component>> components;
 
-		bool destroyed = false;
 		int health = 1;
 
 		

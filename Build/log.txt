@@ -1,8 +1,20 @@
-Info: Factory.h(75): class registered: Weapon
+Info: Factory.h(75): class registered: Enemy
+Info: Factory.h(75): class registered: Player
 Info: Factory.h(75): class registered: GameObject
+Info: Factory.h(75): class registered: TilemapComponent
+Info: Factory.h(75): class registered: TextRenderComponent
 Info: Factory.h(75): class registered: SpriteComponent
+Info: Factory.h(75): class registered: SpriteAnimRenderComponent
 Info: Factory.h(75): class registered: ModelRenderComponent
 Info: Factory.h(75): class registered: EnginePhysicsComponent
 Info: Factory.h(75): class registered: CircleCollisionComponent
-Info: Main.cpp(41): Hello World
-Info: Factory.h(83): prototype class registered: Rocket
+Info: Factory.h(75): class registered: Box2DPhysicsComponent
+Info: Factory.h(75): class registered: Box2DCollisionComponent
+Info: Main.cpp(23): Hello World
+Info: Factory.h(83): prototype class registered: Player
+Info: Factory.h(83): prototype class registered: Crate
+Info: Factory.h(83): prototype class registered: Hole
+Info: Factory.h(83): prototype class registered: tile01
+Info: Factory.h(83): prototype class registered: tile02
+Info: EventManager.cpp(16): Event Subscribed: OnAddPoints
+Info: EventManager.cpp(16): Event Subscribed: OnPlayerDead

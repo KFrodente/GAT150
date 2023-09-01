@@ -29,13 +29,25 @@ namespace yogi
 		{
 			return std::dynamic_pointer_cast<T>(m_resources[filename]);
 		}
-		
+
 		res_t<T> resource = std::make_shared<T>();
+		if (!resource->Create(filename, args...))
+		{
+			WARNING_LOG("Could not create resource: " << filename);
+			return res_t<T>();
+		}
+
+		m_resources[filename] = resource;
+		return resource;
+		
+		/*res_t<T> resource = std::make_shared<T>();
 		resource->Create(filename, args ...);
 		m_resources[filename] = resource;
 		
 
-		return resource;
+		return resource;*/
 	}
+
+
 
 }

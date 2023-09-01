@@ -13,6 +13,13 @@
 
 #include "Framework/Scene.h"
 #include "Audio/AudioSystem.h"
+
+CLASS_DEFINITION(Player)
+
+void Player::Read(const rapidjson::Value& value)
+{
+}
+
 bool Player::Initialize()
 {
 	GameObject::Initialize();
@@ -61,6 +68,10 @@ void Player::Update(float dt)
 	//m_transform.position.x = yogi::Wrap(m_transform.position.x, yogi::g_renderer.GetWidth());
 	//m_transform.position.y = yogi::Wrap(m_transform.position.y, yogi::g_renderer.GetHeight());
 
+	//float rotate = 0;
+	//if (yogi::g_inputSystem.GetKeyDown(SDL_SCANCODE_A)) rotate = 1;
+	//if (yogi::g_inputSystem.GetKeyDown(SDL_SCANCODE_D)) rotate = -1;
+	//m_physicsComponent->ApplyTorque(rotate * turnRate)
 
 	//float thrust = 0;
 	//if (yogi::g_inputSystem.GetKeyDown(SDL_SCANCODE_S)) thrust = 1;
@@ -109,11 +120,13 @@ void Player::Update(float dt)
 
 	if (health <= 0)
 	{
-		dynamic_cast<SpaceGame*>(m_game)->SetState(SpaceGame::eState::PLAYERDEADSTART);
+		//dynamic_cast<SpaceGame*>(m_game)->SetState(SpaceGame::eState::PLAYERDEADSTART);
+		yogi::EventManager::Instance().DispatchEvent("OnPlayerDead", 1);
+
 	}
 }
 
-void Player::OnCollision(GameObject* other)
+void Player::OnCollisionEnter(GameObject* other)
 {
 	if ((other->tag == "EnemyBullet" && other->m_timeTillDamage < 0) || other->tag == "Enemy")
 	{

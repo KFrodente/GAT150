@@ -24,6 +24,7 @@ namespace yogi
 		float GetFireRate() { return m_playerFireRate; }
 
 		bool heal = false;
+		bool win = false;
 
 	protected:
 		std::unique_ptr<class Scene> m_scene;

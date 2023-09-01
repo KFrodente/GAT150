@@ -25,6 +25,8 @@ namespace yogi
 	class Object
 	{
 	public:
+		/*CLASS_DECLARATION(Object)*/
+
 		Object() = default;
 		Object(std::string name) { name = name; };
 		virtual ~Object() { OnDestroy(); }

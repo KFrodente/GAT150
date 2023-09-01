@@ -1,0 +1,68 @@
+{
+	"gameobjects":[
+		{
+			"type": "GameObject",
+			"name": "Background",
+			"persistent": true,
+			"transform": {
+				"position": [ 400, 300 ],
+				"scale": 3.0,
+				"rotation": 0
+			},
+			"components": [
+				{
+					"type": "SpriteComponent",
+					"textureName": "lake.jpg"
+				}
+			]
+		},
+		{
+			"type": "Weapon",
+			"tag": "Bullet",
+			"name": "Weapon",
+			"prototype": true,
+			"lifespan": -1.0,
+			"transform": {
+				"position": [ 400, 300 ],
+				"scale": 1.0,
+				"rotation": 0
+			},
+			"speed": 10.0,
+				"components": [
+				{
+					"type": "SpriteComponent",
+					"textureName": "PlayerBullet.png"
+				},
+				{
+					"type": "Box2DPhysicsComponent",
+					"gravityScale": 0.0,
+					"damping": 0.0,
+					"angularDamping": 2
+				},
+				{
+					"type": "Box2DCollisionComponent",
+					"size": [ 32, 32 ]
+				}
+				]
+		},
+		{
+			"type": "GameObject",
+			"name": "Title",
+			"persistent": false,
+			"transform": {
+				"position": [ 400, 300 ],
+				"scale": 2,
+				"rotation": 0
+			},
+			"components": [
+				{
+					"type": "TextRenderComponent",
+					"fontName": "BodoniFLF-Bold.ttf",
+					"fontSize": 24,
+					"text": "DODGEGAME",
+					"color": [1,0,0,1]
+				}
+			]
+		}
+	]
+}
